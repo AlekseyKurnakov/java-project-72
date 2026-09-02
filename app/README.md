@@ -33,8 +33,6 @@ cd java-project-72
 
 </details>
 
-## О Хекслете
-
-### Демо приложения
+## Демо приложения
 
 [Page Analyzer на Railway](https://java-project-72-production-22a9.up.railway.app/)
