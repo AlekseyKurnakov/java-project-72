@@ -6,7 +6,9 @@ import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.DirectoryCodeResolver;
 import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.UrlController;
 import hexlet.code.repository.BaseRepository;
+import hexlet.code.uril.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;
@@ -87,13 +89,16 @@ public class App {
                 config.staticFiles.add("/static", Location.CLASSPATH);
             }
 
-            config.routes.get("/", ctx -> {
-                ctx.render("articles/index.jte");
-            });
+            config.routes.get(NamedRoutes.rootPath(), UrlController::home);
+            config.routes.post(NamedRoutes.urlsPath(), UrlController::create);
+            config.routes.get(NamedRoutes.urlPath("{id}"), UrlController::show);
+            config.routes.get(NamedRoutes.urlsPath(), UrlController::index);
+
         });
 
         return app;
     }
+
 
     public static void main(String[] args) throws Exception {
         BaseRepository.dataSource = getDatabase();
