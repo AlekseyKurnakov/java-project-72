@@ -32,11 +32,11 @@ public class UrlController {
             if (url.getPort() != -1) {
                 preparedUrl += ":" + url.getPort();
             }
-            Optional<Url> UrlFromDatabase = UrlRepository.findByUrl(preparedUrl);
-            if (!UrlFromDatabase.isEmpty()) {
+            Optional<Url> urlFromDatabase = UrlRepository.findByUrl(preparedUrl);
+            if (!urlFromDatabase.isEmpty()) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
                 ctx.sessionAttribute("flashType","exists");
-                ctx.redirect("/urls/" + UrlFromDatabase.get().getId());
+                ctx.redirect("/urls/" + urlFromDatabase.get().getId());
             } else {
                 Timestamp createdAt = new Timestamp(System.currentTimeMillis());
                 Url newUrl = new Url(preparedUrl, createdAt);
