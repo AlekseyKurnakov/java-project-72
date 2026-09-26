@@ -1,11 +1,16 @@
 # Анализатор страниц (Java)
 
 [![hexlet-check](https://github.com/AlekseyKurnakov/java-project-72/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AlekseyKurnakov/java-project-72/actions)
+[![Test Coverage](https://raw.githubusercontent.com/AlekseyKurnakov/java-project-72/main/.github/badges/jacoco.svg)](https://github.com/AlekseyKurnakov/java-project-72/actions)
 
 Создадите полноценное веб-приложение, которое выполняет запросы по сети и сохраняет данные в базу данных. Настроите CI и выполните деплой.
 
 Учебный проект Хекслета: https://ru.hexlet.io/programs/java
 Как это должно работать: https://files.hexlet.app/a/f9wlja
+
+## Демо приложения
+
+[Page Analyzer на Railway](https://java-project-72-production-22a9.up.railway.app/)
 
 ## Стек
 
@@ -32,7 +37,3 @@ cd java-project-72
 Тесты запускаются на каждый коммит. За запуск отвечает файл `.github/workflows/hexlet-check.yml` — не удаляйте и не переименовывайте ни его, ни репозиторий.
 
 </details>
-
-## О Хекслете
-
-[Хекслет](https://ru.hexlet.io/) — школа программирования: авторские программы обучения с практикой, поддержкой наставников и реальными проектами, которые остаются в резюме. Этот репозиторий — один из таких проектов.
