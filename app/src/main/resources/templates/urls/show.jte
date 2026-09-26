@@ -47,6 +47,49 @@
                 </tbody>
             </table>
 
+            <h2 class="mb-4 mt-10 text-2xl font-light">
+                Проверки
+            </h2>
+
+            <form method="post" action="/urls/${page.getUrl().getId()}/checks" class="mb-6">
+                <input
+                    type="submit"
+                    value="Запустить проверку"
+                    class="cursor-pointer rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                >
+            </form>
+
+            <table
+                data-test="checks"
+                class="w-full border-collapse"
+            >
+                <thead>
+                    <tr class="border-b border-gray-300 text-left">
+                        <th class="px-3 py-3">ID</th>
+                        <th class="px-3 py-3">Код ответа</th>
+                        <th class="px-3 py-3">h1</th>
+                        <th class="px-3 py-3">title</th>
+                        <th class="px-3 py-3">description</th>
+                        <th class="px-3 py-3">Дата проверки</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @for (var check : page.getUrlsCheck())
+                        <tr class="border-b border-gray-200">
+                            <td class="px-3 py-3">${check.getId()}</td>
+                            <td class="px-3 py-3">${check.getStatusCode()}</td>
+                            <td class="px-3 py-3">${check.getH1()}</td>
+                            <td class="px-3 py-3">${check.getTitle()}</td>
+                            <td class="px-3 py-3">${check.getDescription()}</td>
+                            <td class="px-3 py-3">${check.getCreatedAt().toString()}</td>
+                        </tr>
+                    @endfor
+
+                </tbody>
+            </table>
+
         </div>
     `
 )

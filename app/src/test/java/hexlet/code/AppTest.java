@@ -23,10 +23,30 @@ import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import hexlet.code.model.UrlCheck;
+import hexlet.code.repository.UrlChekRepository;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
+
+import java.io.IOException;
+
 public class AppTest {
 
     private static Javalin app;
     private static final String testUrl = "https://example.com";
+
+    private static MockWebServer mockServer;
+
+    @BeforeAll
+    static void startMockServer() throws IOException {
+        mockServer = new MockWebServer();
+        mockServer.start();
+    }
+
+    @AfterAll
+    static void stopMockServer() throws IOException {
+        mockServer.close();
+    }
 
     @BeforeEach
     void setUp() throws SQLException {
@@ -198,6 +218,66 @@ public class AppTest {
                     .contains("data-test=\"urls\"")
                     .contains("https://first.com")
                     .contains("https://second.com");
+        });
+    }
+
+    @Test
+    void testCreateCheckSuccess() throws SQLException {
+        JavalinTest.test(app, (server, client) -> {
+            String html = "<html><head><title>Test title</title>"
+                    + "<meta name=\"description\" content=\"Test description\">"
+                    + "</head><body><h1>Test h1</h1></body></html>";
+
+            mockServer.enqueue(new MockResponse.Builder()
+                    .code(200)
+                    .body(html)
+                    .build());
+
+            String mockUrl = mockServer.url("/").toString();
+            Url url = new Url(mockUrl, new Timestamp(System.currentTimeMillis()));
+            UrlRepository.save(url);
+
+            var response = client.post(NamedRoutes.urlChecksPath(url.getId()), "");
+
+            assertThat(response.code())
+                    .isEqualTo(302);
+
+            var pageResponse = client.get(NamedRoutes.urlPath(url.getId()));
+
+            assertThat(pageResponse.body().string())
+                    .contains("Страница успешно проверена")
+                    .contains("Test title")
+                    .contains("Test h1")
+                    .contains("Test description");
+
+            assertThat(UrlChekRepository.getEntities(url.getId()))
+                    .hasSize(1);
+        });
+    }
+
+    @Test
+    void testCreateCheckError() throws SQLException {
+        JavalinTest.test(app, (server, client) -> {
+            mockServer.enqueue(new MockResponse.Builder()
+                    .code(500)
+                    .build());
+
+            String mockUrl = mockServer.url("/").toString();
+            Url url = new Url(mockUrl, new Timestamp(System.currentTimeMillis()));
+            UrlRepository.save(url);
+
+            var response = client.post(NamedRoutes.urlChecksPath(url.getId()), "");
+
+            assertThat(response.code())
+                    .isEqualTo(302);
+
+            var pageResponse = client.get(NamedRoutes.urlPath(url.getId()));
+
+            assertThat(pageResponse.body().string())
+                    .contains("Произошла ошибка при проверке");
+
+            assertThat(UrlChekRepository.getEntities(url.getId()))
+                    .isEmpty();
         });
     }
 

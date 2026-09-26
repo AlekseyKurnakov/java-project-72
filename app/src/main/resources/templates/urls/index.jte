@@ -19,13 +19,15 @@
                     <tr class="border-b border-gray-300 text-left">
                         <th class="px-3 py-3">ID</th>
                         <th class="px-3 py-3">Имя</th>
-                        <th class="px-3 py-3">Дата создания</th>
+                        <th class="px-3 py-3">Последняя проверка</th>
+                        <th class="px-3 py-3">Код ответа</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
                     @for (var url : page.getUrls())
+                        !{var lastCheck = page.getLastChecks().get(url.getId());}
                         <tr class="border-b border-gray-200">
 
                             <td class="px-3 py-3">
@@ -33,16 +35,20 @@
                             </td>
 
                             <td class="px-3 py-3">
-                                <a
+
                                     href="/urls/${url.getId()}"
                                     class="text-blue-600 hover:underline"
-                                >
+                                <a>
                                     ${url.getName()}
                                 </a>
                             </td>
 
                             <td class="px-3 py-3">
-                                ${url.getCreatedAt().toString()}
+                                ${lastCheck != null ? lastCheck.getCreatedAt().toString() : ""}
+                            </td>
+
+                            <td class="px-3 py-3">
+                                ${lastCheck != null ? lastCheck.getStatusCode().toString() : ""}
                             </td>
 
                         </tr>

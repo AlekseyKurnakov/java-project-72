@@ -56,6 +56,12 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.27.3")
     testImplementation("io.javalin:javalin-testtools:7.2.3")
 
+    implementation("com.konghq:unirest-java-core:4.10.1")
+
+    implementation("com.squareup.okhttp3:mockwebserver3:5.5.0")
+
+    implementation("org.jsoup:jsoup:1.23.2")
+
 
 }
 

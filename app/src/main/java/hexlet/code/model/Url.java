@@ -1,9 +1,12 @@
 package hexlet.code.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Timestamp;
-
+@Getter
 public class Url {
-
+    @Setter
     private Long id;
     private String name;
     private Timestamp createdAt;
@@ -12,21 +15,4 @@ public class Url {
         this.name = name;
         this.createdAt = createdAt;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
 }
