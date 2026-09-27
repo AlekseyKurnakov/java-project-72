@@ -1,10 +1,11 @@
 package gg.jte.generated.ondemand.urls;
 import hexlet.code.dto.UrlPage;
+import hexlet.code.util.TextUtils;
 @SuppressWarnings("unchecked")
 @javax.annotation.processing.Generated("gg.jte.TemplateEngine")
 public final class JteshowGenerated {
 	public static final String JTE_NAME = "urls/show.jte";
-	public static final int[] JTE_LINE_INFO = {0,0,2,2,2,2,2,4,4,7,7,11,11,11,25,25,25,34,34,34,43,43,43,54,54,54,54,79,79,81,81,81,82,82,82,83,83,83,84,84,84,85,85,85,86,86,86,88,88,94,94,94,94,94,2,2,2,2};
+	public static final int[] JTE_LINE_INFO = {0,0,1,3,3,3,3,3,5,5,8,8,12,12,12,26,26,26,35,35,35,44,44,44,55,55,55,55,80,80,82,82,82,83,83,83,84,84,84,85,85,85,86,86,86,87,87,87,89,89,95,95,95,95,95,3,3,3,3};
 	public static void render(gg.jte.html.HtmlTemplateOutput jteOutput, gg.jte.html.HtmlInterceptor jteHtmlInterceptor, UrlPage page) {
 		jteOutput.writeContent("\n");
 		gg.jte.generated.ondemand.layout.JteapplicationGenerated.render(jteOutput, jteHtmlInterceptor, new gg.jte.html.HtmlContent() {
@@ -35,13 +36,13 @@ public final class JteshowGenerated {
 					jteOutput.writeUserContent(check.getStatusCode());
 					jteOutput.writeContent("</td>\n                            <td class=\"px-3 py-3\">");
 					jteOutput.setContext("td", null);
-					jteOutput.writeUserContent(check.getH1());
+					jteOutput.writeUserContent(TextUtils.truncate(check.getH1(), 200));
 					jteOutput.writeContent("</td>\n                            <td class=\"px-3 py-3\">");
 					jteOutput.setContext("td", null);
-					jteOutput.writeUserContent(check.getTitle());
+					jteOutput.writeUserContent(TextUtils.truncate(check.getTitle(), 200));
 					jteOutput.writeContent("</td>\n                            <td class=\"px-3 py-3\">");
 					jteOutput.setContext("td", null);
-					jteOutput.writeUserContent(check.getDescription());
+					jteOutput.writeUserContent(TextUtils.truncate(check.getDescription(), 200));
 					jteOutput.writeContent("</td>\n                            <td class=\"px-3 py-3\">");
 					jteOutput.setContext("td", null);
 					jteOutput.writeUserContent(check.getCreatedAt().toString());

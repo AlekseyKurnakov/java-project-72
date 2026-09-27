@@ -45,7 +45,7 @@ public class UrlController {
             Optional<Url> urlFromDatabase = UrlRepository.findByUrl(preparedUrl);
             if (!urlFromDatabase.isEmpty()) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.sessionAttribute("flashType","exists");
+                ctx.sessionAttribute("flashType","success");
                 ctx.redirect("/urls/" + urlFromDatabase.get().getId());
             } else {
                 Timestamp createdAt = new Timestamp(System.currentTimeMillis());
@@ -60,7 +60,7 @@ public class UrlController {
 
             UrlPage page = new UrlPage();
             page.setFlash("Некорректный URL");
-            page.setFlashType("Incorrect");
+            page.setFlashType("failure");
 
             ctx.status(422);
             ctx.render("articles/index.jte", Map.of("page", page));
@@ -109,7 +109,7 @@ public class UrlController {
 
         if (statusCode >= 400) {
             ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
-            ctx.sessionAttribute("flashType","error");
+            ctx.sessionAttribute("flashType","failure");
         } else {
             Document doc = Jsoup.parse(response.getBody());
             String title = doc.title();
@@ -125,7 +125,7 @@ public class UrlController {
             UrlChekRepository.save(urlCheck);
 
             ctx.sessionAttribute("flash", "Страница успешно проверена");
-            ctx.sessionAttribute("flashType","successfully");
+            ctx.sessionAttribute("flashType","success");
         }
 
 
