@@ -5,9 +5,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import hexlet.code.model.Url;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.repository.UrlRepository;
-import hexlet.code.uril.NamedRoutes;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
-import io.javalin.testtools.HttpClient;
 import io.javalin.testtools.JavalinTest;
 import org.junit.jupiter.api.*;
 
@@ -20,10 +19,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlChekRepository;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;

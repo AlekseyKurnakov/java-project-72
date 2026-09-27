@@ -1,4 +1,5 @@
 @import hexlet.code.dto.UrlPage
+@import hexlet.code.util.TextUtils
 
 @param UrlPage page
 
@@ -80,9 +81,9 @@
                         <tr class="border-b border-gray-200">
                             <td class="px-3 py-3">${check.getId()}</td>
                             <td class="px-3 py-3">${check.getStatusCode()}</td>
-                            <td class="px-3 py-3">${check.getH1()}</td>
-                            <td class="px-3 py-3">${check.getTitle()}</td>
-                            <td class="px-3 py-3">${check.getDescription()}</td>
+                            <td class="px-3 py-3">${TextUtils.truncate(check.getH1(), 200)}</td>
+                            <td class="px-3 py-3">${TextUtils.truncate(check.getTitle(), 200)}</td>
+                            <td class="px-3 py-3">${TextUtils.truncate(check.getDescription(), 200)}</td>
                             <td class="px-3 py-3">${check.getCreatedAt().toString()}</td>
                         </tr>
                     @endfor

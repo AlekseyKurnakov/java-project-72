@@ -8,7 +8,7 @@ import gg.jte.resolve.DirectoryCodeResolver;
 import gg.jte.resolve.ResourceCodeResolver;
 import hexlet.code.controller.UrlController;
 import hexlet.code.repository.BaseRepository;
-import hexlet.code.uril.NamedRoutes;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinJte;

@@ -58,12 +58,7 @@ public class UrlChekRepository {
                 String description = resultSet.getString("description");
                 Timestamp createdAt = resultSet.getTimestamp("created_at");
 
-                UrlCheck urlCheck = new UrlCheck(urlIdInDataBase,
-                                                 statusCode,
-                                                 h1,
-                                                 title,
-                                                 description,
-                                                 createdAt);
+                UrlCheck urlCheck = new UrlCheck(urlIdInDataBase, statusCode, h1, title, description, createdAt);
                 urlCheck.setId(id);
                 result.add(urlCheck);
             }

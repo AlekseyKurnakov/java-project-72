@@ -1,4 +1,4 @@
-package hexlet.code.uril;
+package hexlet.code.util;
 
 public class NamedRoutes {
 

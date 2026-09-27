@@ -5,7 +5,7 @@ import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlChekRepository;
 import hexlet.code.repository.UrlRepository;
-import hexlet.code.uril.NamedRoutes;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import kong.unirest.core.HttpResponse;
@@ -120,12 +120,7 @@ public class UrlController {
 
             Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
-            UrlCheck urlCheck = new UrlCheck(id,
-                                             statusCode,
-                                             h1,
-                                             title,
-                                             description,
-                                             createdAt);
+            UrlCheck urlCheck = new UrlCheck(id, statusCode, h1, title, description, createdAt);
 
             UrlChekRepository.save(urlCheck);
 
