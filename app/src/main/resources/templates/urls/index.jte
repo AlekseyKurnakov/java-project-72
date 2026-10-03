@@ -1,4 +1,5 @@
 @import hexlet.code.dto.UrlPage
+@import hexlet.code.util.DateUtils
 
 @param UrlPage page
 
@@ -35,16 +36,16 @@
                             </td>
 
                             <td class="px-3 py-3">
-
+                                <a
                                     href="/urls/${url.getId()}"
                                     class="text-blue-600 hover:underline"
-                                <a>
+                                >
                                     ${url.getName()}
                                 </a>
                             </td>
 
                             <td class="px-3 py-3">
-                                ${lastCheck != null ? lastCheck.getCreatedAt().toString() : ""}
+                                ${lastCheck != null ? DateUtils.format(lastCheck.getCreatedAt()) : ""}
                             </td>
 
                             <td class="px-3 py-3">

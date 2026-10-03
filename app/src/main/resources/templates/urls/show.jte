@@ -1,5 +1,6 @@
 @import hexlet.code.dto.UrlPage
 @import hexlet.code.util.TextUtils
+@import hexlet.code.util.DateUtils
 
 @param UrlPage page
 
@@ -41,7 +42,7 @@
                             Дата создания
                         </td>
                         <td class="border border-gray-200 px-4 py-3">
-                            ${page.getUrl().getCreatedAt().toString()}
+                            ${DateUtils.format(page.getUrl().getCreatedAt())}
                         </td>
                     </tr>
 
