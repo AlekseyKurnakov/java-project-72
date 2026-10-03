@@ -28,6 +28,7 @@
                 <tbody>
 
                     @for (var url : page.getUrls())
+
                         !{var lastCheck = page.getLastChecks().get(url.getId());}
                         <tr class="border-b border-gray-200">
 

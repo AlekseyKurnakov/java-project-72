@@ -31,7 +31,7 @@ public class UrlPage extends BasePage{
     }
 
     public void addUrlCheck(UrlCheck urlCheck) {
-        urlsCheck.add(urlCheck);
+        this.urlsCheck.add(urlCheck);
     }
 
 }

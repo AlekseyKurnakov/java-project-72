@@ -85,7 +85,7 @@
                             <td class="px-3 py-3">${TextUtils.truncate(check.getH1(), 200)}</td>
                             <td class="px-3 py-3">${TextUtils.truncate(check.getTitle(), 200)}</td>
                             <td class="px-3 py-3">${TextUtils.truncate(check.getDescription(), 200)}</td>
-                            <td class="px-3 py-3">${check.getCreatedAt().toString()}</td>
+                            <td class="px-3 py-3">${DateUtils.format(check.getCreatedAt())}</td>
                         </tr>
                     @endfor
 
