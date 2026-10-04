@@ -7,11 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static hexlet.code.repository.BaseRepository.dataSource;
 
@@ -35,7 +35,7 @@ public class UrlChekRepository {
             stmt.setString(3, urlCheck.getH1());
             stmt.setString(4, urlCheck.getTitle());
             stmt.setString(5, urlCheck.getDescription());
-            stmt.setTimestamp(6, urlCheck.getCreatedAt());
+            stmt.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
             stmt.executeUpdate();
 
             ResultSet generatedKeys = stmt.getGeneratedKeys();
@@ -61,36 +61,14 @@ public class UrlChekRepository {
                 String h1 = resultSet.getString("h1");
                 String title = resultSet.getString("title");
                 String description = resultSet.getString("description");
-                Timestamp createdAt = resultSet.getTimestamp("created_at");
+                Instant createdAtInDataBase = resultSet.getTimestamp("created_at").toInstant();
 
-                UrlCheck urlCheck = new UrlCheck(urlIdInDataBase, statusCode, h1, title, description, createdAt);
+                UrlCheck urlCheck = new UrlCheck(urlIdInDataBase, statusCode, h1, title, description);
                 urlCheck.setId(id);
+                urlCheck.setCreatedAt(createdAtInDataBase);
                 result.add(urlCheck);
             }
             return result;
-        }
-    }
-
-    public static Optional<UrlCheck> findLast(Long urlId) throws SQLException {
-        var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY id DESC LIMIT 1";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, urlId);
-            ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                Long id = resultSet.getLong("id");
-                Long urlIdInDataBase = resultSet.getLong("url_id");
-                Integer statusCode = resultSet.getInt("status_code");
-                String h1 = resultSet.getString("h1");
-                String title = resultSet.getString("title");
-                String description = resultSet.getString("description");
-                Timestamp createdAt = resultSet.getTimestamp("created_at");
-
-                UrlCheck urlCheck = new UrlCheck(urlIdInDataBase, statusCode, h1, title, description, createdAt);
-                urlCheck.setId(id);
-                return Optional.of(urlCheck);
-            }
-            return Optional.empty();
         }
     }
 
@@ -113,10 +91,11 @@ public class UrlChekRepository {
                 String h1 = resultSet.getString("h1");
                 String title = resultSet.getString("title");
                 String description = resultSet.getString("description");
-                Timestamp createdAt = resultSet.getTimestamp("created_at");
+                Instant createdAtInDataBase = resultSet.getTimestamp("created_at").toInstant();
 
-                UrlCheck urlCheck = new UrlCheck(urlIdInDataBase, statusCode, h1, title, description, createdAt);
+                UrlCheck urlCheck = new UrlCheck(urlIdInDataBase, statusCode, h1, title, description);
                 urlCheck.setId(id);
+                urlCheck.setCreatedAt(createdAtInDataBase);
 
                 lastChecks.put(urlIdInDataBase, urlCheck);
             }

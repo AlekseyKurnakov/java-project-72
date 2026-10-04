@@ -1,16 +1,18 @@
 package hexlet.code.util;
 
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private static final ZoneId ZONE = ZoneId.of("Europe/Moscow");
 
-    public static String format(Timestamp timestamp) {
-        if (timestamp == null) {
+    public static String format(Instant createdAt) {
+        if (createdAt == null) {
             return null;
         }
-        return timestamp.toLocalDateTime().format(FORMATTER);
+        return createdAt.atZone(ZONE).format(FORMATTER);
     }
 }

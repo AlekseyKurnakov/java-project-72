@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class UrlRepository extends BaseRepository {
                         Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setString(1, url.getName());
-            stmt.setTimestamp(2, url.getCreatedAt());
+            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
             stmt.executeUpdate();
 
             ResultSet generatedKeys = stmt.getGeneratedKeys();
@@ -46,10 +47,11 @@ public class UrlRepository extends BaseRepository {
 
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                Timestamp created_at = resultSet.getTimestamp("created_at");
+                Instant createdAtInDataBase = resultSet.getTimestamp("created_at").toInstant();
                 Long id = resultSet.getLong("id");
 
-                Url url = new Url(name, created_at);
+                Url url = new Url(name);
+                url.setCreatedAt(createdAtInDataBase);
                 url.setId(id);
 
                 return Optional.of(url);
@@ -72,11 +74,12 @@ public class UrlRepository extends BaseRepository {
 
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                Timestamp created_at = resultSet.getTimestamp("created_at");
+                Instant createdAtInDataBase = resultSet.getTimestamp("created_at").toInstant();
                 Long idFromDatabase = resultSet.getLong("id");
 
-                Url url = new Url(name, created_at);
+                Url url = new Url(name);
                 url.setId(idFromDatabase);
+                url.setCreatedAt(createdAtInDataBase);
 
                 return Optional.of(url);
             }
@@ -94,9 +97,10 @@ public class UrlRepository extends BaseRepository {
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
-                Timestamp created_at = resultSet.getTimestamp("created_at");
-                Url url = new Url(name, created_at);
+                Instant createdAtInDataBase = resultSet.getTimestamp("created_at").toInstant();
+                Url url = new Url(name);
                 url.setId(id);
+                url.setCreatedAt(createdAtInDataBase);
                 result.add(url);
             }
             return result;

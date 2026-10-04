@@ -43,6 +43,9 @@ public class App {
                 && Files.isDirectory(TEMPLATES_PATH);
     }
 
+    //jdbc:postgresql://ep-cool-meadow-b55uz9nt.c-7.us-east-2.aws.neon.tech/neondb?
+    // user=neondb_owner&password=npg_y3NLzb7raVQg&sslmode=require
+
     private static TemplateEngine createTemplateEngine() {
         if (isDevelopment()) {
             var codeResolver = new DirectoryCodeResolver(TEMPLATES_PATH);

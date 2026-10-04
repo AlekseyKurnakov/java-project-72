@@ -18,7 +18,6 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.stream.Collectors;
 
 import hexlet.code.repository.UrlChekRepository;
@@ -26,34 +25,26 @@ import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
 
 import java.io.IOException;
+import io.javalin.http.HttpStatus;
 
 public class AppTest {
 
     private static Javalin app;
     private static final String testUrl = "https://example.com";
-
     private static MockWebServer mockServer;
 
     @BeforeAll
-    static void startMockServer() throws IOException {
+    static void setUpClass() throws SQLException, IOException {
         mockServer = new MockWebServer();
         mockServer.start();
-    }
 
-    @AfterAll
-    static void stopMockServer() throws IOException {
-        mockServer.close();
-    }
-
-    @BeforeEach
-    void setUp() throws SQLException {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;");
 
         HikariDataSource testDataSource = new HikariDataSource(config);
 
-        InputStream url = App.class.getClassLoader().getResourceAsStream("schema.sql");
-        String sql = new BufferedReader(new InputStreamReader(url))
+        InputStream schemaStream = App.class.getClassLoader().getResourceAsStream("schema.sql");
+        String sql = new BufferedReader(new InputStreamReader(schemaStream))
                 .lines().collect(Collectors.joining("\n"));
 
         try (Connection connection = testDataSource.getConnection();
@@ -61,14 +52,23 @@ public class AppTest {
             statement.execute(sql);
         }
         BaseRepository.dataSource = testDataSource;
+    }
 
+    @BeforeEach
+    void setUp() throws SQLException {
+        try (Connection connection = BaseRepository.dataSource.getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.execute("DELETE FROM url_checks");
+            statement.execute("DELETE FROM urls");
+        }
         app = App.getApp();
     }
-    @AfterEach
-    void closeDatabase() {
+
+    @AfterAll
+    static void tearDownClass() throws IOException {
+        mockServer.close();
         BaseRepository.dataSource.close();
     }
-
     @Test
     void testCreateUrlSuccess() throws SQLException {
 
@@ -80,7 +80,7 @@ public class AppTest {
             );
 
             assertThat(response.code())
-                    .isEqualTo(302);
+                    .isEqualTo(HttpStatus.FOUND.getCode());
 
             Url urlInDataBase = UrlRepository.findByUrl(testUrl)
                     .orElseThrow();
@@ -96,7 +96,7 @@ public class AppTest {
             );
 
             assertThat(pageResponse.code())
-                    .isEqualTo(200);
+                    .isEqualTo(HttpStatus.OK.getCode());
 
             assertThat(pageResponse.body().string())
                     .contains(testUrl)
@@ -111,7 +111,7 @@ public class AppTest {
 
         JavalinTest.test(app, (server, client) -> {
 
-            Url newUrl = new Url(testUrl, new Timestamp(System.currentTimeMillis()));
+            Url newUrl = new Url(testUrl);
             UrlRepository.save(newUrl);
 
             var responseAlreadyExists = client.post(
@@ -123,7 +123,7 @@ public class AppTest {
                     .orElseThrow();
 
             assertThat(responseAlreadyExists.code())
-                    .isEqualTo(302);
+                    .isEqualTo(HttpStatus.FOUND.getCode());
 
             assertThat(responseAlreadyExists.headers().get("Location"))
                     .containsExactly(NamedRoutes.urlPath(urlInDataBase.getId()));
@@ -135,7 +135,7 @@ public class AppTest {
             );
 
             assertThat(pageResponseAlreadyExists.code())
-                    .isEqualTo(200);
+                    .isEqualTo(HttpStatus.OK.getCode());
 
             assertThat(pageResponseAlreadyExists.body().string())
                     .contains("Страница уже существует");
@@ -153,7 +153,7 @@ public class AppTest {
             );
 
             assertThat(responseIncorrectUrl.code())
-                    .isEqualTo(422);
+                    .isEqualTo(HttpStatus.UNPROCESSABLE_CONTENT.getCode());
 
             assertThat(responseIncorrectUrl.body().string())
                     .contains("Некорректный URL");
@@ -166,7 +166,7 @@ public class AppTest {
             var response = client.get(NamedRoutes.rootPath());
 
             assertThat(response.code())
-                    .isEqualTo(200);
+                    .isEqualTo(HttpStatus.OK.getCode());
 
             assertThat(response.body().string())
                     .contains("Анализатор страниц");
@@ -177,7 +177,7 @@ public class AppTest {
     void testShow() throws SQLException {
         JavalinTest.test(app, (server, client) -> {
 
-            Url newUrl = new Url(testUrl, new Timestamp(System.currentTimeMillis()));
+            Url newUrl = new Url(testUrl);
             UrlRepository.save(newUrl);
 
             var pageResponseShowUrl = client.get(
@@ -185,7 +185,7 @@ public class AppTest {
             );
 
             assertThat(pageResponseShowUrl.code())
-                    .isEqualTo(200);
+                    .isEqualTo(HttpStatus.OK.getCode());
 
             assertThat(pageResponseShowUrl.body().string())
                     .contains(testUrl)
@@ -199,15 +199,15 @@ public class AppTest {
     void testIndex() throws SQLException {
         JavalinTest.test(app, (server, client) -> {
 
-            Url firstUrl = new Url("https://first.com", new Timestamp(System.currentTimeMillis()));
-            Url secondUrl = new Url("https://second.com", new Timestamp(System.currentTimeMillis()));
+            Url firstUrl = new Url("https://first.com");
+            Url secondUrl = new Url("https://second.com");
             UrlRepository.save(firstUrl);
             UrlRepository.save(secondUrl);
 
             var response = client.get(NamedRoutes.urlsPath());
 
             assertThat(response.code())
-                    .isEqualTo(200);
+                    .isEqualTo(HttpStatus.OK.getCode());
 
             String body = response.body().string();
 
@@ -226,18 +226,18 @@ public class AppTest {
                     + "</head><body><h1>Test h1</h1></body></html>";
 
             mockServer.enqueue(new MockResponse.Builder()
-                    .code(200)
+                    .code(HttpStatus.OK.getCode())
                     .body(html)
                     .build());
 
             String mockUrl = mockServer.url("/").toString();
-            Url url = new Url(mockUrl, new Timestamp(System.currentTimeMillis()));
+            Url url = new Url(mockUrl);
             UrlRepository.save(url);
 
             var response = client.post(NamedRoutes.urlChecksPath(url.getId()), "");
 
             assertThat(response.code())
-                    .isEqualTo(302);
+                    .isEqualTo(HttpStatus.FOUND.getCode());
 
             var pageResponse = client.get(NamedRoutes.urlPath(url.getId()));
 
@@ -247,8 +247,14 @@ public class AppTest {
                     .contains("Test h1")
                     .contains("Test description");
 
-            assertThat(UrlChekRepository.getEntities(url.getId()))
-                    .hasSize(1);
+            var checks = UrlChekRepository.getEntities(url.getId());
+            assertThat(checks).hasSize(1);
+
+            var savedCheck = checks.get(0);
+            assertThat(savedCheck.getStatusCode()).isEqualTo(HttpStatus.OK.getCode());
+            assertThat(savedCheck.getTitle()).isEqualTo("Test title");
+            assertThat(savedCheck.getH1()).isEqualTo("Test h1");
+            assertThat(savedCheck.getDescription()).isEqualTo("Test description");
         });
     }
 
@@ -256,17 +262,17 @@ public class AppTest {
     void testCreateCheckError() throws SQLException {
         JavalinTest.test(app, (server, client) -> {
             mockServer.enqueue(new MockResponse.Builder()
-                    .code(500)
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.getCode())
                     .build());
 
             String mockUrl = mockServer.url("/").toString();
-            Url url = new Url(mockUrl, new Timestamp(System.currentTimeMillis()));
+            Url url = new Url(mockUrl);
             UrlRepository.save(url);
 
             var response = client.post(NamedRoutes.urlChecksPath(url.getId()), "");
 
             assertThat(response.code())
-                    .isEqualTo(302);
+                    .isEqualTo(HttpStatus.FOUND.getCode());
 
             var pageResponse = client.get(NamedRoutes.urlPath(url.getId()));
 
