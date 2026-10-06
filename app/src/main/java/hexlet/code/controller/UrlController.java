@@ -104,41 +104,32 @@ public class UrlController {
         try {
             response = Unirest.get(url.getName()).asString();
             doc = Jsoup.parse(response.getBody());
+            int statusCode = response.getStatus();
+
+            if (statusCode >= 400) {
+                ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
+                ctx.sessionAttribute("flashType","failure");
+            } else {
+                String title = doc.title();
+                Element h1Element = doc.selectFirst("h1");
+                String h1 = h1Element != null ? h1Element.text() : null;
+                Element descriptionElement = doc.selectFirst("meta[name=description]");
+                String description = descriptionElement != null ? descriptionElement.attr("content") : null;
+
+                UrlCheck urlCheck = new UrlCheck(id, statusCode, h1, title, description);
+
+                UrlChekRepository.save(urlCheck);
+
+                ctx.sessionAttribute("flash", "Страница успешно проверена");
+                ctx.sessionAttribute("flashType","success");
+            }
         } catch (UnirestException e) {
             ctx.sessionAttribute("flash", "Не удалось подключиться к сайту");
             ctx.sessionAttribute("flashType","failure");
-            ctx.redirect(NamedRoutes.urlPath(id));
-            return;
         } catch (Exception e) {
             ctx.sessionAttribute("flash", "Не удалось обработать содержимое страницы");
             ctx.sessionAttribute("flashType","failure");
-            ctx.redirect(NamedRoutes.urlPath(id));
-            return;
         }
-
-
-        int statusCode = response.getStatus();
-
-        if (statusCode >= 400) {
-            ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
-            ctx.sessionAttribute("flashType","failure");
-        } else {
-            String title = doc.title();
-            Element h1Element = doc.selectFirst("h1");
-            String h1 = h1Element != null ? h1Element.text() : null;
-            Element descriptionElement = doc.selectFirst("meta[name=description]");
-            String description = descriptionElement != null ? descriptionElement.attr("content") : null;
-
-            UrlCheck urlCheck = new UrlCheck(id, statusCode, h1, title, description);
-
-            UrlChekRepository.save(urlCheck);
-
-            ctx.sessionAttribute("flash", "Страница успешно проверена");
-            ctx.sessionAttribute("flashType","success");
-        }
-
-
-
 
         ctx.redirect(NamedRoutes.urlPath(id));
     }
