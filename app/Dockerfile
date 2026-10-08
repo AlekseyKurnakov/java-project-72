@@ -1,9 +1,10 @@
-FROM gradle:8.12.1-jdk21
-
+FROM gradle:8.12.1-jdk21 AS build
 WORKDIR /app
-
 COPY . .
+RUN ./gradlew installDist --no-daemon
 
-RUN ["./gradlew", "clean", "build"]
-
-CMD ["./gradlew", "run"]
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/build/install/app /app
+EXPOSE 8080
+CMD ["/app/bin/app"]
