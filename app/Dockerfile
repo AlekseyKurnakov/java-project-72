@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN ./gradlew installDist --no-daemon
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/build/install/app /app
 EXPOSE 8080

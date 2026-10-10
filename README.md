@@ -7,7 +7,7 @@ Page Analyzer — сайт, который проверяет указанные
 
 ## Демо
 
-[Page Analyzer на Railway](https://java-project-72-production-22a9.up.railway.app/)
+[Page Analyzer на Snapdeploy](https://page-analyzer-1d366.containers.snapdeploy.app)
 
 ## Стек
 
